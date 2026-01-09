@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bziz SuperAdmin Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --primary-color: #3a36e0;
+            --secondary-color: #6c63ff;
+            --success-color: #2ecc71;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+            --info-color: #3498db;
+            --light-color: #f8f9fa;
+            --dark-color: #2c3e50;
+            --gray-color: #95a5a6;
+            --border-radius: 12px;
+            --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+        }
+        
+        body {
+            background-color: #f0f2f5;
+            color: #333;
+            line-height: 1.6;
+            padding-bottom: 80px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        /* Header Styles */
+        .superadmin-header {
+            background: linear-gradient(135deg, var(--primary-color), #1a1485);
+            color: white;
+            padding: 20px 15px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            font-weight: 700;
+            font-size: 1.4rem;
+        }
+        
+        .logo i {
+            margin-right: 8px;
+            color: #ffd166;
+        }
+        
+        .superadmin-badge {
+            background-color: #ffd166;
+            color: #1a1485;
+            font-size: 0.7rem;
+            padding: 3px 8px;
+            border-radius: 20px;
+            margin-left: 8px;
+            font-weight: bold;
+        }
+        
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .notification-btn {
+            position: relative;
+            color: white;
+            font-size: 1.2rem;
+        }
+        
+        .notification-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: var(--danger-color);
+            color: white;
+            font-size: 0.7rem;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .user-profile {
+            position: relative;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: white;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .user-dropdown {
+            position: absolute;
+            top: 50px;
+            right: 0;
+            background: white;
+            color: var(--dark-color);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            width: 200px;
+            display: none;
+            z-index: 10;
+        }
+        
+        .user-dropdown.active {
+            display: block;
+        }
+        
+        .user-dropdown a {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            text-decoration: none;
+            color: var(--dark-color);
+            border-bottom: 1px solid #eee;
+        }
+        
+        .user-dropdown a i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .user-dropdown a:last-child {
+            border-bottom: none;
+            color: var(--danger-color);
+        }
+        
+        .user-dropdown a:hover {
+            background-color: #f5f7fb;
+        }
+        
+        /* Main Content */
+        .superadmin-content {
+            padding: 20px 0;
+        }
+        
+        .section-title {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: var(--dark-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .view-all {
+            font-size: 0.85rem;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+        }
+        
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Platform Overview */
+        .platform-overview {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .overview-card {
+            text-align: center;
+            padding: 20px 15px;
+            position: relative;
+        }
+        
+        .overview-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            font-size: 1.2rem;
+            color: white;
+        }
+        
+        .total-users .overview-icon {
+            background: linear-gradient(135deg, var(--info-color), #2980b9);
+        }
+        
+        .total-profiles .overview-icon {
+            background: linear-gradient(135deg, var(--secondary-color), #5a52d3);
+        }
+        
+        .active-plans .overview-icon {
+            background: linear-gradient(135deg, var(--success-color), #27ae60);
+        }
+        
+        .revenue .overview-icon {
+            background: linear-gradient(135deg, #ff9f43, #e67e22);
+        }
+        
+        .overview-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            display: block;
+        }
+        
+        .overview-label {
+            font-size: 0.9rem;
+            color: var(--gray-color);
+            margin-top: 5px;
+        }
+        
+        .overview-change {
+            font-size: 0.8rem;
+            margin-top: 5px;
+            display: block;
+        }
+        
+        .change-positive {
+            color: var(--success-color);
+        }
+        
+        .change-negative {
+            color: var(--danger-color);
+        }
+        
+        /* System Health */
+        .health-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .health-card {
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .health-status {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+        
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-good {
+            background-color: var(--success-color);
+        }
+        
+        .status-warning {
+            background-color: var(--warning-color);
+        }
+        
+        .status-error {
+            background-color: var(--danger-color);
+        }
+        
+        .health-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        /* Recent Users */
+        .user-list {
+            list-style: none;
+        }
+        
+        .user-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .user-item:last-child {
+            border-bottom: none;
+        }
+        
+        .user-avatar-small {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #e0e0e0;
+            color: var(--dark-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+        
+        .user-details h4 {
+            font-size: 0.95rem;
+            margin-bottom: 3px;
+        }
+        
+        .user-details p {
+            font-size: 0.85rem;
+            color: var(--gray-color);
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-plan {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            margin-left: 8px;
+        }
+        
+        .plan-free {
+            background-color: #e8f4fc;
+            color: var(--info-color);
+        }
+        
+        .plan-pro {
+            background-color: #e8f6ef;
+            color: var(--success-color);
+        }
+        
+        .plan-business {
+            background-color: #fef7e6;
+            color: var(--warning-color);
+        }
+        
+        .user-actions {
+            margin-left: auto;
+            display: flex;
+            gap: 8px;
+        }
+        
+        .action-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f5f7fb;
+            color: var(--dark-color);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        
+        /* Quick Admin Actions */
+        .admin-actions-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .admin-action-btn {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: var(--border-radius);
+            padding: 20px 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            color: var(--dark-color);
+            transition: var(--transition);
+        }
+        
+        .admin-action-btn i {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .action-manage-users i {
+            color: var(--info-color);
+        }
+        
+        .action-system-settings i {
+            color: var(--primary-color);
+        }
+        
+        .action-billing i {
+            color: var(--success-color);
+        }
+        
+        .action-content-mod i {
+            color: var(--warning-color);
+        }
+        
+        .action-api-management i {
+            color: var(--secondary-color);
+        }
+        
+        .action-reports i {
+            color: var(--danger-color);
+        }
+        
+        .admin-action-btn:hover {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        
+        .admin-action-btn:hover i {
+            color: white;
+        }
+        
+        /* System Notifications */
+        .notification-list {
+            list-style: none;
+        }
+        
+        .notification-item {
+            display: flex;
+            align-items: flex-start;
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .notification-item:last-child {
+            border-bottom: none;
+        }
+        
+        .notification-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            color: white;
+            font-size: 0.9rem;
+        }
+        
+        .notification-system {
+            background-color: var(--info-color);
+        }
+        
+        .notification-security {
+            background-color: var(--warning-color);
+        }
+        
+        .notification-user {
+            background-color: var(--secondary-color);
+        }
+        
+        .notification-billing {
+            background-color: var(--success-color);
+        }
+        
+        .notification-details h4 {
+            font-size: 0.95rem;
+            margin-bottom: 5px;
+        }
+        
+        .notification-details p {
+            font-size: 0.85rem;
+            color: var(--gray-color);
+        }
+        
+        .notification-time {
+            font-size: 0.8rem;
+            color: var(--gray-color);
+            margin-top: 5px;
+        }
+        
+        /* Bottom Navigation */
+        .superadmin-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 15px 0;
+            box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.08);
+            z-index: 100;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: var(--gray-color);
+            font-size: 0.8rem;
+            position: relative;
+        }
+        
+        .nav-item.active {
+            color: var(--primary-color);
+        }
+        
+        .nav-item i {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+        
+        .nav-badge {
+            position: absolute;
+            top: -5px;
+            right: 5px;
+            background-color: var(--danger-color);
+            color: white;
+            font-size: 0.6rem;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Responsive Adjustments */
+        @media (max-width: 400px) {
+            .platform-overview, .health-grid, .admin-actions-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header-controls {
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- SuperAdmin Header -->
+    <header class="superadmin-header">
+        <div class="container">
+            <div class="header-top">
+                <div class="logo">
+                    <i class="fas fa-crown"></i>
+                    <span>Bziz</span>
+                    <span class="superadmin-badge">SUPERADMIN</span>
+                </div>
+                <div class="header-controls">
+                    <div class="notification-btn">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge">3</span>
+                    </div>
+                    <div class="user-profile">
+                        <div class="user-avatar" id="userMenuBtn">
+                            <span>SA</span>
+                        </div>
+                        <div class="user-dropdown" id="userMenu">
+                            <a href="#"><i class="fas fa-user-shield"></i> SuperAdmin Profile</a>
+                            <a href="#"><i class="fas fa-cogs"></i> System Settings</a>
+                            <a href="#"><i class="fas fa-database"></i> Database</a>
+                            <a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="header-stats">
+                <p style="font-size: 0.9rem; opacity: 0.9;"><i class="fas fa-server"></i> System Status: <span style="color: #2ecc71; font-weight: bold;">All Systems Operational</span></p>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Main SuperAdmin Content -->
+    <main class="superadmin-content">
+        <div class="container">
+            <!-- Platform Overview -->
+            <div class="section-title">
+                <h2>Platform Overview</h2>
+                <a href="#" class="view-all">Full Report</a>
+            </div>
+            
+            <div class="platform-overview">
+                <div class="card overview-card total-users">
+                    <div class="overview-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <span class="overview-value">2,847</span>
+                    <span class="overview-label">Total Users</span>
+                    <span class="overview-change change-positive">+12% this month</span>
+                </div>
+                
+                <div class="card overview-card total-profiles">
+                    <div class="overview-icon">
+                        <i class="fas fa-id-card"></i>
+                    </div>
+                    <span class="overview-value">4,236</span>
+                    <span class="overview-label">Total Profiles</span>
+                    <span class="overview-change change-positive">+8% this month</span>
+                </div>
+                
+                <div class="card overview-card active-plans">
+                    <div class="overview-icon">
+                        <i class="fas fa-credit-card"></i>
+                    </div>
+                    <span class="overview-value">1,593</span>
+                    <span class="overview-label">Active Plans</span>
+                    <span class="overview-change change-positive">+5% this month</span>
+                </div>
+                
+                <div class="card overview-card revenue">
+                    <div class="overview-icon">
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                    <span class="overview-value">$12,458</span>
+                    <span class="overview-label">Monthly Revenue</span>
+                    <span class="overview-change change-positive">+18% this month</span>
+                </div>
+            </div>
+            
+            <!-- System Health -->
+            <div class="section-title">
+                <h2>System Health</h2>
+                <a href="#" class="view-all">Monitor</a>
+            </div>
+            
+            <div class="health-grid">
+                <div class="card health-card">
+                    <div class="health-status">
+                        <div class="status-indicator status-good"></div>
+                        <span>API Server</span>
+                    </div>
+                    <div class="health-value">99.8%</div>
+                    <div class="overview-label">Uptime</div>
+                </div>
+                
+                <div class="card health-card">
+                    <div class="health-status">
+                        <div class="status-indicator status-good"></div>
+                        <span>Database</span>
+                    </div>
+                    <div class="health-value">100%</div>
+                    <div class="overview-label">Uptime</div>
+                </div>
+                
+                <div class="card health-card">
+                    <div class="health-status">
+                        <div class="status-indicator status-warning"></div>
+                        <span>Storage</span>
+                    </div>
+                    <div class="health-value">78%</div>
+                    <div class="overview-label">Used</div>
+                </div>
+                
+                <div class="card health-card">
+                    <div class="health-status">
+                        <div class="status-indicator status-good"></div>
+                        <span>QR Service</span>
+                    </div>
+                    <div class="health-value">99.9%</div>
+                    <div class="overview-label">Uptime</div>
+                </div>
+            </div>
+            
+            <!-- Recent Users -->
+            <div class="section-title">
+                <h2>Recent Users</h2>
+                <a href="#" class="view-all">Manage All</a>
+            </div>
+            
+            <div class="card">
+                <ul class="user-list">
+                    <li class="user-item">
+                        <div class="user-avatar-small">
+                            <span>JD</span>
+                        </div>
+                        <div class="user-details">
+                            <h4>John Davis</h4>
+                            <p>john@example.com 
+                                <span class="user-plan plan-pro">PRO</span>
+                            </p>
+                        </div>
+                        <div class="user-actions">
+                            <a href="#" class="action-btn" title="Edit">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a href="#" class="action-btn" title="View">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                        </div>
+                    </li>
+                    <li class="user-item">
+                        <div class="user-avatar-small">
+                            <span>SM</span>
+                        </div>
+                        <div class="user-details">
+                            <h4>Sarah Miller</h4>
+                            <p>sarah@business.com 
+                                <span class="user-plan plan-business">BUSINESS</span>
+                            </p>
+                        </div>
+                        <div class="user-actions">
+                            <a href="#" class="action-btn" title="Edit">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a href="#" class="action-btn" title="View">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                        </div>
+                    </li>
+                    <li class="user-item">
+                        <div class="user-avatar-small">
+                            <span>RT</span>
+                        </div>
+                        <div class="user-details">
+                            <h4>Robert Taylor</h4>
+                            <p>robert@tech.com 
+                                <span class="user-plan plan-free">FREE</span>
+                            </p>
+                        </div>
+                        <div class="user-actions">
+                            <a href="#" class="action-btn" title="Edit">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a href="#" class="action-btn" title="View">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                        </div>
+                    </li>
+                    <li class="user-item">
+                        <div class="user-avatar-small">
+                            <span>EJ</span>
+                        </div>
+                        <div class="user-details">
+                            <h4>Emma Johnson</h4>
+                            <p>emma@consulting.com 
+                                <span class="user-plan plan-pro">PRO</span>
+                            </p>
+                        </div>
+                        <div class="user-actions">
+                            <a href="#" class="action-btn" title="Edit">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a href="#" class="action-btn" title="View">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            
+            <!-- Quick Admin Actions -->
+            <div class="section-title">
+                <h2>Admin Actions</h2>
+            </div>
+            
+            <div class="admin-actions-grid">
+                <a href="#" class="admin-action-btn action-manage-users">
+                    <i class="fas fa-user-cog"></i>
+                    <span>Manage Users</span>
+                </a>
+                <a href="#" class="admin-action-btn action-system-settings">
+                    <i class="fas fa-sliders-h"></i>
+                    <span>System Settings</span>
+                </a>
+                <a href="#" class="admin-action-btn action-billing">
+                    <i class="fas fa-file-invoice-dollar"></i>
+                    <span>Billing & Plans</span>
+                </a>
+                <a href="#" class="admin-action-btn action-content-mod">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Content Moderation</span>
+                </a>
+                <a href="#" class="admin-action-btn action-api-management">
+                    <i class="fas fa-code"></i>
+                    <span>API Management</span>
+                </a>
+                <a href="#" class="admin-action-btn action-reports">
+                    <i class="fas fa-chart-pie"></i>
+                    <span>Advanced Reports</span>
+                </a>
+            </div>
+            
+            <!-- System Notifications -->
+            <div class="section-title">
+                <h2>System Notifications</h2>
+                <a href="#" class="view-all">See All</a>
+            </div>
+            
+            <div class="card">
+                <ul class="notification-list">
+                    <li class="notification-item">
+                        <div class="notification-icon notification-system">
+                            <i class="fas fa-server"></i>
+                        </div>
+                        <div class="notification-details">
+                            <h4>System Update Available</h4>
+                            <p>Version 2.3.1 is ready to deploy with security patches</p>
+                            <div class="notification-time">2 hours ago</div>
+                        </div>
+                    </li>
+                    <li class="notification-item">
+                        <div class="notification-icon notification-security">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div class="notification-details">
+                            <h4>Security Alert</h4>
+                            <p>Multiple failed login attempts detected from unusual location</p>
+                            <div class="notification-time">5 hours ago</div>
+                        </div>
+                    </li>
+                    <li class="notification-item">
+                        <div class="notification-icon notification-user">
+                            <i class="fas fa-user-times"></i>
+                        </div>
+                        <div class="notification-details">
+                            <h4>User Account Suspended</h4>
+                            <p>Account "john123" was suspended for policy violation</p>
+                            <div class="notification-time">1 day ago</div>
+                        </div>
+                    </li>
+                    <li class="notification-item">
+                        <div class="notification-icon notification-billing">
+                            <i class="fas fa-credit-card"></i>
+                        </div>
+                        <div class="notification-details">
+                            <h4>Payment Processing Issue</h4>
+                            <p>3 failed payments need attention in the billing system</p>
+                            <div class="notification-time">2 days ago</div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Bottom Navigation -->
+    <nav class="superadmin-nav">
+        <a href="#" class="nav-item active">
+            <i class="fas fa-tachometer-alt"></i>
+            <span>Dashboard</span>
+        </a>
+        <a href="#" class="nav-item">
+            <i class="fas fa-users-cog"></i>
+            <span>Users</span>
+            <span class="nav-badge">3</span>
+        </a>
+        <a href="#" class="nav-item">
+            <i class="fas fa-cogs"></i>
+            <span>System</span>
+        </a>
+        <a href="#" class="nav-item">
+            <i class="fas fa-chart-line"></i>
+            <span>Analytics</span>
+        </a>
+        <a href="#" class="nav-item">
+            <i class="fas fa-tools"></i>
+            <span>Tools</span>
+        </a>
+    </nav>
+    
+    <script>
+        // Toggle user dropdown menu
+        document.getElementById('userMenuBtn').addEventListener('click', function() {
+            document.getElementById('userMenu').classList.toggle('active');
+        });
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            const userMenu = document.getElementById('userMenu');
+            const userMenuBtn = document.getElementById('userMenuBtn');
+            
+            if (!userMenu.contains(event.target) && !userMenuBtn.contains(event.target)) {
+                userMenu.classList.remove('active');
+            }
+        });
+        
+        // Animate the statistics on page load
+        function animateValue(element, start, end, duration) {
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                const value = Math.floor(progress * (end - start) + start);
+                
+                // Format numbers with commas
+                if (element.classList.contains('overview-value')) {
+                    element.innerHTML = value.toLocaleString();
+                } else if (element.textContent.includes('$')) {
+                    element.innerHTML = '$' + value.toLocaleString();
+                } else {
+                    element.innerHTML = value + '%';
+                }
+                
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                }
+            };
+            window.requestAnimationFrame(step);
+        }
+        
+        // Animate the platform overview numbers
+        document.addEventListener('DOMContentLoaded', function() {
+            // Platform overview values
+            const overviewValues = document.querySelectorAll('.overview-value');
+            
+            setTimeout(() => {
+                animateValue(overviewValues[0], 0, 2847, 1500);
+                animateValue(overviewValues[1], 0, 4236, 1500);
+                animateValue(overviewValues[2], 0, 1593, 1500);
+                animateValue(overviewValues[3], 0, 12458, 1500);
+            }, 500);
+            
+            // System health values
+            const healthValues = document.querySelectorAll('.health-value');
+            setTimeout(() => {
+                animateValue(healthValues[0], 0, 99.8, 1000);
+                animateValue(healthValues[1], 0, 100, 1200);
+                animateValue(healthValues[2], 0, 78, 1400);
+                animateValue(healthValues[3], 0, 99.9, 1600);
+            }, 800);
+            
+            // Notification bell click
+            document.querySelector('.notification-btn').addEventListener('click', function() {
+                alert('Notifications panel would open here');
+                // In a real app, this would open a notifications panel
+            });
+        });
+        
+        // Bottom navigation active state
+        const navItems = document.querySelectorAll('.nav-item');
+        navItems.forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                navItems.forEach(nav => nav.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+        
+        // Admin action buttons feedback
+        const adminActions = document.querySelectorAll('.admin-action-btn');
+        adminActions.forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const actionName = this.querySelector('span').textContent;
+                console.log(`SuperAdmin action clicked: ${actionName}`);
+                // In a real app, this would navigate to the appropriate admin section
+                
+                // Show a quick feedback
+                this.style.backgroundColor = 'var(--primary-color)';
+                this.style.color = 'white';
+                setTimeout(() => {
+                    this.style.backgroundColor = '';
+                    this.style.color = '';
+                }, 300);
+            });
+        });
+    </script>
+</body>
+</html>
